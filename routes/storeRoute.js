@@ -10,7 +10,6 @@ import {
 import { verifyToken, isAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
-
 // Admin 
 router.post("/", verifyToken, isAdmin, createStore);
 router.put("/:id", verifyToken, isAdmin, updateStore);
