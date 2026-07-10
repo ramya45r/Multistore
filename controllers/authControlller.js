@@ -82,7 +82,7 @@ export const loginUser = async(req,res)=>{
 
         res.json({
             message:"Login successful",
-            user
+            user,token
         });
 
 
