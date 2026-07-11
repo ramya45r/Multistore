@@ -120,6 +120,7 @@ export const adjustStock = async (req, res) => {
 export const transferStock = async (req, res) => {
   try {
     const { product, fromStore, toStore, quantity } = req.body;
+console.log(req.body);
 
     if (!product || !fromStore || !toStore || !quantity) {
       return res.status(400).json({
@@ -178,6 +179,28 @@ export const transferStock = async (req, res) => {
       message: "Stock transferred successfully",
       sourceStock,
       destinationStock,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+export const getStoreProducts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    
+    const stocks = await Stock.find({ store: id })
+      .populate("product")
+      .populate("store");
+console.log(stocks);
+
+    res.status(200).json({
+      success: true,
+      store: stocks.length > 0 ? stocks[0].store : null,
+      products: stocks,
     });
   } catch (error) {
     res.status(500).json({
