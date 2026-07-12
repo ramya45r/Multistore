@@ -81,7 +81,7 @@ This backend provides authentication, product management, store management, stoc
 Clone  repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ramya45r/Multistore.git
 
 Add the following variables:
 
