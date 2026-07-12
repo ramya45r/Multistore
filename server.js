@@ -7,6 +7,7 @@ import productRoutes from './routes/productRoute.js';
 import storeRoutes from './routes/storeRoute.js';
 import stokeRoutes from './routes/stockRoute.js';
 import cookieParser from "cookie-parser";
+import { swaggerSetup } from "./config/swagger.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(
   })
 );
 app.use(express.json());
+swaggerSetup(app);
  const PORT = process.env.PORT;
  app.use("/api/auth",authRoutes );
  app.use("/api/product",productRoutes );

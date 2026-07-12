@@ -58,23 +58,45 @@ export const createStock = async (req, res) => {
   }
 };
 
-export const getStocks = async (req, res) => {
-  try {
-    const stocks = await Stock.find()
-      .populate("product", "name sku")
-      .populate("store", "name location");
+export const getStocks = async(req,res)=>{
 
-    res.status(200).json({
-      success: true,
-      count: stocks.length,
-      stocks,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+ try{
+
+   const { lowStock } = req.query;
+
+
+   let filter = {};
+
+
+   if(lowStock){
+
+     filter.quantity = {
+       $lte:Number(lowStock)
+     };
+
+   }
+
+
+   const stocks = await Stock.find(filter)
+     .populate("product")
+     .populate("store");
+
+
+   res.status(200).json({
+     success:true,
+     stocks
+   });
+
+
+ }catch(error){
+
+   res.status(500).json({
+     success:false,
+     message:error.message
+   });
+
+ }
+
 };
 
 export const adjustStock = async (req, res) => {

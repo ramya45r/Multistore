@@ -1,0 +1,678 @@
+openapi: 3.0.3
+
+info:
+  title: Multi Store Stock Management API
+  description: API documentation for stock management system
+  version: 1.0.0
+
+
+servers:
+  - url: http://localhost:5000/api
+
+
+tags:
+  - name: Auth
+  - name: Products
+  - name: Stores
+  - name: Stock
+
+
+
+paths:
+
+# ================= AUTH =================
+
+  /auth/register:
+
+    post:
+
+      tags:
+        - Auth
+
+      summary: Register user
+
+
+      requestBody:
+
+        required: true
+
+        content:
+
+          application/json:
+
+            schema:
+
+              $ref: "#/components/schemas/RegisterInput"
+
+
+      responses:
+
+        201:
+          description: User registered successfully
+
+        400:
+          description: Invalid request
+
+
+
+  /auth/login:
+
+    post:
+
+      tags:
+        - Auth
+
+      summary: Login user
+
+
+      requestBody:
+
+        required: true
+
+        content:
+
+          application/json:
+
+            schema:
+
+              $ref: "#/components/schemas/LoginInput"
+
+
+      responses:
+
+        200:
+          description: Login successful
+
+        401:
+          description: Invalid credentials
+
+
+
+  /auth/logout:
+
+    post:
+
+      tags:
+        - Auth
+
+      summary: Logout user
+
+      security:
+        - cookieAuth: []
+
+
+      responses:
+
+        200:
+          description: Logout successful
+
+
+
+  /auth/me:
+
+    get:
+
+      tags:
+        - Auth
+
+      summary: Get current user
+
+      security:
+        - cookieAuth: []
+
+
+      responses:
+
+        200:
+          description: User details
+
+
+
+# ================= PRODUCTS =================
+
+
+  /products:
+
+
+    get:
+
+      tags:
+        - Products
+
+      summary: Get all products
+
+
+      responses:
+
+        200:
+
+          description: Products fetched
+
+
+          content:
+
+            application/json:
+
+              schema:
+
+                type: array
+
+                items:
+
+                  $ref: "#/components/schemas/Product"
+
+
+
+    post:
+
+      tags:
+        - Products
+
+      summary: Create product
+
+
+      security:
+
+        - cookieAuth: []
+
+
+      requestBody:
+
+        required: true
+
+        content:
+
+          application/json:
+
+            schema:
+
+              $ref: "#/components/schemas/ProductInput"
+
+
+
+      responses:
+
+        201:
+
+          description: Product created
+
+        401:
+
+          description: Unauthorized
+
+  /products/{id}:
+
+    put:
+
+      tags:
+
+        - Products
+
+      summary: Update product
+
+
+      security:
+
+        - cookieAuth: []
+
+
+      parameters:
+
+        - name: id
+
+          in: path
+
+          required: true
+
+          schema:
+
+            type: string
+
+
+      requestBody:
+
+        required: true
+
+        content:
+
+          application/json:
+
+            schema:
+
+              $ref: "#/components/schemas/ProductInput"
+
+
+
+      responses:
+
+        200:
+
+          description: Product updated successfully
+
+
+        400:
+
+          description: Invalid product data
+
+
+        404:
+
+          description: Product not found
+
+
+
+
+
+
+
+
+
+# ================= STORES =================
+
+
+  /stores:
+
+
+    get:
+
+      tags:
+        - Stores
+
+      summary: Get all stores
+
+
+      responses:
+
+        200:
+
+          description: Stores fetched
+
+
+
+    post:
+
+      tags:
+        - Stores
+
+      summary: Create store
+
+
+      security:
+
+        - cookieAuth: []
+
+
+      requestBody:
+
+        content:
+
+          application/json:
+
+            schema:
+
+              $ref: "#/components/schemas/StoreInput"
+
+
+
+      responses:
+
+        201:
+
+          description: Store created
+
+
+
+
+
+  /stores/{id}:
+
+
+    get:
+
+      tags:
+        - Stores
+
+      summary: Get store by id
+
+
+      parameters:
+
+        - name: id
+
+          in: path
+
+          required: true
+
+          schema:
+
+            type: string
+
+
+
+      responses:
+
+        200:
+
+          description: Store found
+
+
+
+    put:
+
+      tags:
+        - Stores
+
+      summary: Update store
+
+
+      security:
+
+        - cookieAuth: []
+
+
+      parameters:
+
+        - name: id
+
+          in: path
+
+          required: true
+
+          schema:
+
+            type: string
+
+
+      responses:
+
+        200:
+
+          description: Store updated
+
+
+
+
+
+
+
+# ================= STOCK =================
+
+
+  /stocks:
+
+
+    get:
+
+      tags:
+        - Stock
+
+      summary: Get stock levels
+
+
+      responses:
+
+        200:
+
+          description: Stock list
+
+
+
+
+
+  /stocks/adjust:
+
+
+    put:
+
+      tags:
+        - Stock
+
+      summary: Adjust product stock
+
+
+      security:
+
+        - cookieAuth: []
+
+
+      requestBody:
+
+        required: true
+
+        content:
+
+          application/json:
+
+            schema:
+
+              $ref: "#/components/schemas/StockAdjustInput"
+
+
+
+      responses:
+
+        200:
+
+          description: Stock updated
+
+
+
+        400:
+
+          description: Invalid quantity
+
+
+
+
+
+  /stocks/transfer:
+
+
+    post:
+
+      tags:
+        - Stock
+
+      summary: Transfer stock between stores
+
+
+      security:
+
+        - cookieAuth: []
+
+
+      requestBody:
+
+        required: true
+
+        content:
+
+          application/json:
+
+            schema:
+
+              $ref: "#/components/schemas/TransferInput"
+
+
+
+      responses:
+
+        200:
+
+          description: Transfer successful
+
+
+        400:
+
+          description: Insufficient stock
+
+
+
+# ================= COMPONENTS =================
+
+
+components:
+
+
+  securitySchemes:
+
+
+    cookieAuth:
+
+      type: apiKey
+
+      in: cookie
+
+      name: token
+
+
+
+  schemas:
+
+
+    RegisterInput:
+
+      type: object
+
+      required:
+        - name
+        - email
+        - password
+
+
+      properties:
+
+        name:
+          type: string
+
+        email:
+          type: string
+
+        password:
+          type: string
+
+
+
+
+    LoginInput:
+
+      type: object
+
+      required:
+        - email
+        - password
+
+
+      properties:
+
+        email:
+          type: string
+
+        password:
+          type: string
+
+
+
+
+    Product:
+
+      type: object
+
+      properties:
+
+        id:
+          type: string
+
+        name:
+          type: string
+
+        sku:
+          type: string
+
+        price:
+          type: number
+
+
+
+    ProductInput:
+
+      type: object
+
+      required:
+
+        - name
+        - price
+
+
+      properties:
+
+        name:
+          type: string
+
+        sku:
+          type: string
+
+        price:
+          type: number
+
+
+
+
+
+    StoreInput:
+
+      type: object
+
+      required:
+
+        - name
+
+
+      properties:
+
+        name:
+          type: string
+
+        location:
+          type: string
+
+
+
+
+
+    StockAdjustInput:
+
+      type: object
+
+      properties:
+
+        productId:
+          type: string
+
+        storeId:
+          type: string
+
+        quantity:
+          type: number
+
+
+
+
+
+    TransferInput:
+
+      type: object
+
+      properties:
+
+        productId:
+          type: string
+
+        fromStore:
+          type: string
+
+        toStore:
+          type: string
+
+        quantity:
+          type: number
